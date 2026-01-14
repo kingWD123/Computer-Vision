@@ -1,0 +1,530 @@
+<!-- posture_app/templates/posture_guide.html -->
+{% extends 'base.html' %}
+
+{% block title %}Guide de Posture - PostureMonitor{% endblock %}
+
+{% block extra_css %}
+<style>
+    .guide-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 20px;
+    }
+
+    .guide-header {
+        text-align: center;
+        margin-bottom: 50px;
+    }
+
+    .guide-header h1 {
+        color: var(--text-main);
+        margin-bottom: 15px;
+        font-weight: 800;
+        font-size: 2.5rem;
+    }
+
+    .guide-header h1 i {
+        color: var(--primary-color);
+        margin-right: 15px;
+    }
+
+    .guide-section {
+        background: white;
+        border-radius: var(--radius-lg);
+        padding: 30px;
+        margin-bottom: 30px;
+        box-shadow: var(--shadow-sm);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: 1px solid var(--border-color);
+    }
+
+    .guide-section:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .guide-section h2 {
+        color: var(--text-main);
+        font-weight: 700;
+        margin-bottom: 25px;
+        display: flex;
+        align-items: center;
+    }
+
+    .guide-section h2 i {
+        color: var(--primary-color);
+        margin-right: 15px;
+        background: rgba(79, 70, 229, 0.1);
+        padding: 10px;
+        border-radius: 12px;
+        font-size: 1.5rem;
+    }
+
+    .posture-comparison {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        margin: 30px 0;
+    }
+
+    @media (max-width: 768px) {
+        .posture-comparison {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .posture-card {
+        border-radius: var(--radius-lg);
+        padding: 30px;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+    .posture-card.bad {
+        background: linear-gradient(135deg, #fee2e2 0%, #fff 100%);
+        border: 2px solid var(--danger-color);
+    }
+
+    .posture-card.good {
+        background: linear-gradient(135deg, #d1fae5 0%, #fff 100%);
+        border: 2px solid var(--secondary-color);
+    }
+
+    .posture-icon {
+        font-size: 4rem;
+        margin-bottom: 20px;
+        transition: transform 0.3s ease;
+    }
+
+    .posture-card:hover .posture-icon {
+        transform: scale(1.1);
+    }
+
+    .exercise-card {
+        background: var(--bg-body);
+        border-radius: var(--radius-md);
+        padding: 25px;
+        margin: 20px 0;
+        border-left: 4px solid var(--primary-color);
+        transition: all 0.3s ease;
+    }
+
+    .exercise-card:hover {
+        background: white;
+        box-shadow: var(--shadow-md);
+        transform: translateX(5px);
+    }
+
+    .exercise-card h3 {
+        color: var(--text-main);
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 20px;
+    }
+
+    .exercise-steps {
+        list-style: none;
+        padding: 0;
+    }
+
+    .exercise-steps li {
+        padding: 12px 0;
+        display: flex;
+        align-items: start;
+        gap: 15px;
+        border-bottom: 1px dashed var(--border-color);
+    }
+
+    .exercise-steps li:last-child {
+        border-bottom: none;
+    }
+
+    .step-number {
+        background: var(--primary-color);
+        color: white;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        flex-shrink: 0;
+        font-size: 0.9rem;
+        box-shadow: 0 2px 4px rgba(79, 70, 229, 0.3);
+    }
+
+    .tip-box {
+        background: linear-gradient(135deg, #fffbeb 0%, #fff 100%);
+        border-left: 4px solid #f59e0b;
+        padding: 25px;
+        border-radius: var(--radius-md);
+        margin: 25px 0;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .tip-box h4 {
+        color: #d97706;
+        margin-bottom: 10px;
+        font-weight: 700;
+        font-size: 1.1rem;
+    }
+
+    .checklist {
+        list-style: none;
+        padding: 0;
+    }
+
+    .checklist li {
+        padding: 15px;
+        margin: 10px 0;
+        background: white;
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        box-shadow: var(--shadow-sm);
+        transition: all 0.3s ease;
+        border: 1px solid var(--border-color);
+    }
+
+    .checklist li:hover {
+        box-shadow: var(--shadow-md);
+        border-color: var(--secondary-color);
+        transform: translateX(5px);
+    }
+
+    .checklist li::before {
+        content: "\f00c";
+        font-family: "Font Awesome 6 Free";
+        font-weight: 900;
+        background: var(--secondary-color);
+        color: white;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+    }
+
+    .warning-box {
+        background: linear-gradient(135deg, #fef2f2 0%, #fff 100%);
+        border-left: 4px solid var(--danger-color);
+        padding: 25px;
+        border-radius: var(--radius-md);
+        margin: 25px 0;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .warning-box h4 {
+        color: #991b1b;
+        margin-bottom: 15px;
+        font-weight: 700;
+        font-size: 1.1rem;
+    }
+
+    .warning-box ul li {
+        margin-bottom: 10px;
+        color: #7f1d1d;
+        position: relative;
+        padding-left: 20px;
+    }
+
+    .warning-box ul li::before {
+        content: "•";
+        color: var(--danger-color);
+        font-weight: bold;
+        position: absolute;
+        left: 0;
+    }
+
+    .btn-action {
+        background: var(--primary-color);
+        color: white;
+        padding: 15px 40px;
+        border-radius: 50px;
+        font-weight: 600;
+        box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.3);
+        transition: all 0.3s;
+    }
+
+    .btn-action:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.4);
+        color: white;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="guide-header animate__animated animate__fadeInDown">
+        <h1><i class="fas fa-book-medical"></i> Guide Complet de Posture</h1>
+        <p class="lead text-muted">Apprenez à maintenir une posture correcte et à prévenir les troubles
+            musculo-squelettiques</p>
+    </div>
+
+    <!-- Section 1: Comprendre la posture -->
+    <div class="guide-section animate__animated animate__fadeInUp">
+        <h2><i class="fas fa-crosshairs"></i> Comprendre la Posture Idéale</h2>
+        <p class="text-muted">Une bonne posture réduit la tension sur vos muscles et ligaments, prévient la fatigue et
+            améliore votre concentration.</p>
+
+        <div class="posture-comparison">
+            <div class="posture-card bad">
+                <div class="posture-icon"><i class="fas fa-times-circle text-danger"></i></div>
+                <h3 class="fw-bold text-danger">Mauvaise Posture</h3>
+                <ul class="text-start mt-4 list-unstyled">
+                    <li class="mb-2"><i class="fas fa-times text-danger me-2"></i> Tête penchée en avant</li>
+                    <li class="mb-2"><i class="fas fa-times text-danger me-2"></i> Épaules arrondies</li>
+                    <li class="mb-2"><i class="fas fa-times text-danger me-2"></i> Dos courbé</li>
+                    <li class="mb-2"><i class="fas fa-times text-danger me-2"></i> Bras tendus</li>
+                    <li class="mb-2"><i class="fas fa-times text-danger me-2"></i> Pieds non à plat</li>
+                </ul>
+            </div>
+
+            <div class="posture-card good">
+                <div class="posture-icon"><i class="fas fa-check-circle text-success"></i></div>
+                <h3 class="fw-bold text-success">Bonne Posture</h3>
+                <ul class="text-start mt-4 list-unstyled">
+                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Tête alignée avec la colonne</li>
+                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Épaules détendues et en arrière</li>
+                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Dos droit avec support lombaire</li>
+                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Coudes à 90°</li>
+                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Pieds à plat au sol</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 2: Configuration du poste de travail -->
+    <div class="guide-section animate__animated animate__fadeInUp" style="animation-delay: 0.1s;">
+        <h2><i class="fas fa-desktop"></i> Configuration Ergonomique du Poste</h2>
+
+        <h5 class="fw-bold mb-3 text-muted">Checklist pour un poste optimal :</h5>
+        <ul class="checklist">
+            <li><strong>Écran :</strong> À hauteur des yeux, 50-70 cm de distance</li>
+            <li><strong>Chaise :</strong> Réglable en hauteur, avec support lombaire</li>
+            <li><strong>Clavier :</strong> À hauteur des coudes, poignets droits</li>
+            <li><strong>Souris :</strong> À côté du clavier, au même niveau</li>
+            <li><strong>Éclairage :</strong> Suffisant, sans reflets sur l'écran</li>
+            <li><strong>Pieds :</strong> À plat au sol ou sur repose-pieds</li>
+        </ul>
+
+        <div class="tip-box">
+            <h4><i class="fas fa-lightbulb me-2"></i> Astuce Pro</h4>
+            <p class="mb-0">La règle 90-90-90 : Vos genoux, hanches et coudes doivent tous former des angles de 90
+                degrés.</p>
+        </div>
+    </div>
+
+    <!-- Section 3: Exercices de correction -->
+    <div class="guide-section animate__animated animate__fadeInUp" style="animation-delay: 0.2s;">
+        <h2><i class="fas fa-dumbbell"></i> Exercices de Correction</h2>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="exercise-card h-100">
+                    <h3>1. Exercice pour le Cou (Chin Tucks)</h3>
+                    <ul class="exercise-steps">
+                        <li>
+                            <span class="step-number">1</span>
+                            <span>Asseyez-vous droit, regardez devant vous</span>
+                        </li>
+                        <li>
+                            <span class="step-number">2</span>
+                            <span>Rentrez le menton vers l'arrière</span>
+                        </li>
+                        <li>
+                            <span class="step-number">3</span>
+                            <span>Maintenez 5 secondes, relâchez</span>
+                        </li>
+                        <li>
+                            <span class="step-number">4</span>
+                            <span>Répétez 10 fois, 3 fois par jour</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="exercise-card h-100">
+                    <h3>2. Étirement des Épaules</h3>
+                    <ul class="exercise-steps">
+                        <li>
+                            <span class="step-number">1</span>
+                            <span>Asseyez-vous ou tenez-vous droit</span>
+                        </li>
+                        <li>
+                            <span class="step-number">2</span>
+                            <span>Levez vos épaules vers vos oreilles</span>
+                        </li>
+                        <li>
+                            <span class="step-number">3</span>
+                            <span>Roulez-les vers l'arrière et le bas</span>
+                        </li>
+                        <li>
+                            <span class="step-number">4</span>
+                            <span>10 fois en arrière, 10 fois en avant</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="exercise-card h-100">
+                    <h3>3. Étirement du Dos (Cat-Cow)</h3>
+                    <ul class="exercise-steps">
+                        <li>
+                            <span class="step-number">1</span>
+                            <span>À quatre pattes, mains sous les épaules</span>
+                        </li>
+                        <li>
+                            <span class="step-number">2</span>
+                            <span>Inspirez en creusant le dos (vache)</span>
+                        </li>
+                        <li>
+                            <span class="step-number">3</span>
+                            <span>Expirez en arrondissant le dos (chat)</span>
+                        </li>
+                        <li>
+                            <span class="step-number">4</span>
+                            <span>Alternez lentement 10 fois</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="exercise-card h-100">
+                    <h3>4. Renforcement (Wall Angels)</h3>
+                    <ul class="exercise-steps">
+                        <li>
+                            <span class="step-number">1</span>
+                            <span>Collez votre dos contre un mur</span>
+                        </li>
+                        <li>
+                            <span class="step-number">2</span>
+                            <span>Levez les bras à 90°, coudes au mur</span>
+                        </li>
+                        <li>
+                            <span class="step-number">3</span>
+                            <span>Glissez les bras haut/bas lentement</span>
+                        </li>
+                        <li>
+                            <span class="step-number">4</span>
+                            <span>Répétez 10 fois, dos collé</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 4: Règle des pauses -->
+    <div class="guide-section animate__animated animate__fadeInUp" style="animation-delay: 0.3s;">
+        <h2><i class="fas fa-clock"></i> La Règle 20-20-20</h2>
+        <p class="text-muted">Pour prévenir la fatigue oculaire et musculaire :</p>
+
+        <div class="posture-comparison">
+            <div class="posture-card good">
+                <div class="posture-icon"><i class="fas fa-eye text-info"></i></div>
+                <h3 class="fw-bold">Toutes les 20 minutes</h3>
+                <p class="mb-0">Regardez quelque chose à 20 pieds (6 mètres) pendant 20 secondes</p>
+            </div>
+
+            <div class="posture-card good">
+                <div class="posture-icon"><i class="fas fa-walking text-info"></i></div>
+                <h3 class="fw-bold">Toutes les 30 minutes</h3>
+                <p class="mb-0">Levez-vous, marchez et étirez-vous pendant 2-3 minutes</p>
+            </div>
+        </div>
+
+        <div class="tip-box">
+            <h4><i class="fas fa-lightbulb me-2"></i> Astuce Productivité</h4>
+            <p class="mb-0">Utilisez une application de rappel ou la technique Pomodoro (25 min de travail, 5 min de
+                pause) pour vous assurer de faire des pauses régulières.</p>
+        </div>
+    </div>
+
+    <!-- Section 5: Signes d'alerte -->
+    <div class="guide-section animate__animated animate__fadeInUp" style="animation-delay: 0.4s;">
+        <h2><i class="fas fa-exclamation-triangle"></i> Signes d'Alerte à Surveiller</h2>
+
+        <div class="warning-box">
+            <h4><i class="fas fa-user-md me-2"></i> Consultez un professionnel si vous ressentez :</h4>
+            <ul class="list-unstyled">
+                <li>Douleurs persistantes au cou, dos ou épaules</li>
+                <li>Engourdissements ou picotements dans les bras ou les mains</li>
+                <li>Maux de tête fréquents</li>
+                <li>Raideur matinale</li>
+                <li>Douleurs qui s'aggravent avec le temps</li>
+            </ul>
+        </div>
+
+        <div class="alert alert-info border-0 shadow-sm d-flex align-items-center" role="alert">
+            <i class="fas fa-info-circle fa-2x me-3"></i>
+            <div>
+                <strong>Note importante :</strong> Ces exercices et conseils sont préventifs. Si vous souffrez déjà de
+                troubles musculo-squelettiques, consultez un médecin, kinésithérapeute ou ergothérapeute.
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 6: Programme quotidien -->
+    <div class="guide-section animate__animated animate__fadeInUp" style="animation-delay: 0.5s;">
+        <h2><i class="fas fa-calendar-alt"></i> Programme Quotidien Recommandé</h2>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card bg-light border-0 h-100">
+                    <div class="card-body">
+                        <h5 class="fw-bold text-primary mb-3">Matin (5 min)</h5>
+                        <ul class="checklist p-0 m-0 border-0 shadow-none bg-transparent">
+                            <li class="bg-white">10 Chin Tucks</li>
+                            <li class="bg-white">10 Shoulder Rolls</li>
+                            <li class="bg-white">5 Cat-Cow Stretches</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card bg-light border-0 h-100">
+                    <div class="card-body">
+                        <h5 class="fw-bold text-primary mb-3">Journée</h5>
+                        <ul class="checklist p-0 m-0 border-0 shadow-none bg-transparent">
+                            <li class="bg-white">Check posture 30min</li>
+                            <li class="bg-white">Micro-pauses 20min</li>
+                            <li class="bg-white">Marcher 1h</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card bg-light border-0 h-100">
+                    <div class="card-body">
+                        <h5 class="fw-bold text-primary mb-3">Soir (5 min)</h5>
+                        <ul class="checklist p-0 m-0 border-0 shadow-none bg-transparent">
+                            <li class="bg-white">10 Wall Angels</li>
+                            <li class="bg-white">Étirements cou</li>
+                            <li class="bg-white">5 min marche</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Call to action -->
+    <div class="guide-section text-center animate__animated animate__fadeInUp" style="animation-delay: 0.6s;">
+        <h2 class="justify-content-center"><i class="fas fa-rocket"></i> Prêt à Améliorer Votre Posture ?</h2>
+        <p class="lead text-muted mb-4">Utilisez notre système d'analyse en temps réel pour surveiller et corriger votre
+            posture au quotidien</p>
+        <a href="{% url 'analysis' %}" class="btn btn-action btn-lg">
+            <i class="fas fa-play me-2"></i> Démarrer l'Analyse
+        </a>
+    </div>
+</div>
+{% endblock %}

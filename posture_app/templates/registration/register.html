@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+
+{% block title %}Inscription - PostureMonitor Pro{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-xl-10 col-lg-12">
+            <div class="card border-0 shadow-lg overflow-hidden rounded-4 animate__animated animate__fadeInUp">
+                <div class="row g-0">
+                    <!-- Section Visuelle (Gauche) -->
+                    <div class="col-lg-6 d-none d-lg-block position-relative bg-primary">
+                        <div class="position-absolute top-0 start-0 w-100 h-100 bg-gradient-primary"></div>
+                        <!-- Décoration d'arrière-plan -->
+                        <div class="position-absolute top-0 start-0 w-100 h-100"
+                            style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.05\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');">
+                        </div>
+
+                        <div
+                            class="position-relative h-100 d-flex flex-column justify-content-center align-items-center text-white p-5 text-center">
+                            <div class="mb-4 rounded-circle bg-white bg-opacity-25 p-4 animate__animated animate__tada animate__infinite"
+                                style="animation-duration: 3s;">
+                                <i class="fas fa-rocket fa-3x text-white"></i>
+                            </div>
+                            <h2 class="fw-bold mb-3">Commencez l'aventure</h2>
+                            <p class="lead opacity-75 mb-4">Créez votre compte gratuitement et améliorez votre santé
+                                posturale dès aujourd'hui.</p>
+                            <ul class="list-unstyled text-start opacity-75 small">
+                                <li class="mb-2"><i class="fas fa-check-circle me-2"></i>Analyse en temps réel</li>
+                                <li class="mb-2"><i class="fas fa-check-circle me-2"></i>Statistiques détaillées</li>
+                                <li><i class="fas fa-check-circle me-2"></i>Conseils personnalisés</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Section Formulaire (Droite) -->
+                    <div class="col-lg-6 bg-white">
+                        <div class="p-4 p-lg-5">
+                            <div class="text-center mb-5">
+                                <div class="d-inline-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary rounded-circle mb-3"
+                                    style="width: 60px; height: 60px;">
+                                    <i class="fas fa-user-plus fa-xl"></i>
+                                </div>
+                                <h3 class="fw-bold text-dark">Créer un compte</h3>
+                                <p class="text-muted">Rejoignez-nous en quelques secondes</p>
+                            </div>
+
+                            <form method="post" class="needs-validation">
+                                {% csrf_token %}
+
+                                {% if form.errors %}
+                                <div
+                                    class="alert alert-danger border-0 bg-danger bg-opacity-10 text-danger rounded-3 text-sm mb-4 fade show">
+                                    <div class="d-flex align-items-start">
+                                        <i class="fas fa-exclamation-circle me-2 mt-1"></i>
+                                        <div>
+                                            <strong>Veuillez corriger les erreurs :</strong>
+                                            <ul class="mb-0 mt-1 small ps-3">
+                                                {% for field in form %}
+                                                {% for error in field.errors %}
+                                                <li>{{ error }}</li>
+                                                {% endfor %}
+                                                {% endfor %}
+                                                {% for error in form.non_field_errors %}
+                                                <li>{{ error }}</li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endif %}
+
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control bg-light border-0" id="id_username"
+                                        name="username" placeholder="Nom d'utilisateur" required autofocus>
+                                    <label for="id_username" class="text-muted"><i class="fas fa-user me-2"></i>Nom
+                                        d'utilisateur</label>
+                                    <div class="form-text small text-muted ms-1"><i
+                                            class="fas fa-info-circle me-1"></i>Lettres, chiffres et @/./+/-/_</div>
+                                </div>
+
+                                <div class="form-floating mb-3">
+                                    <input type="password" class="form-control bg-light border-0" id="id_password1"
+                                        name="password1" placeholder="Mot de passe" required>
+                                    <label for="id_password1" class="text-muted"><i class="fas fa-lock me-2"></i>Mot de
+                                        passe</label>
+                                    <div class="form-text small text-muted ms-1"><i
+                                            class="fas fa-shield-alt me-1"></i>Minimum 8 caractères</div>
+                                </div>
+
+                                <div class="form-floating mb-4">
+                                    <input type="password" class="form-control bg-light border-0" id="id_password2"
+                                        name="password2" placeholder="Confirmer le mot de passe" required>
+                                    <label for="id_password2" class="text-muted"><i
+                                            class="fas fa-check-circle me-2"></i>Confirmer le mot de passe</label>
+                                </div>
+
+                                <button type="submit"
+                                    class="btn btn-primary-custom w-100 py-3 mb-4 fw-bold shadow-sm rounded-pill">
+                                    S'inscrire <i class="fas fa-arrow-right ms-2"></i>
+                                </button>
+                            </form>
+
+                            <div class="position-relative mb-4">
+                                <hr class="bg-secondary opacity-10">
+                                <span
+                                    class="position-absolute top-50 start-50 translate-middle bg-white px-3 text-muted small text-uppercase fw-bold"
+                                    style="letter-spacing: 1px;">ou</span>
+                            </div>
+
+                            <div class="text-center">
+                                <p class="mb-0 text-muted">
+                                    Déjà un compte ?
+                                    <a href="{% url 'login' %}" class="text-primary fw-bold text-decoration-none">
+                                        Connectez-vous
+                                    </a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

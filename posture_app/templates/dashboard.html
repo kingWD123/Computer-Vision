@@ -1,0 +1,376 @@
+{% extends 'base.html' %}
+
+{% block title %}Tableau de bord - PosturePro{% endblock %}
+
+{% block extra_css %}
+<style>
+    .stat-card {
+        background: white;
+        border-radius: var(--radius-lg);
+        padding: 1.5rem;
+        box-shadow: var(--shadow-sm);
+        transition: all 0.3s ease;
+        border: 1px solid var(--border-color);
+        height: 100%;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-md);
+        border-color: var(--primary-color);
+    }
+    
+    .stat-card::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 100px;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4));
+        transform: skewX(-15deg) translateX(150%);
+        transition: transform 0.5s;
+    }
+    
+    .stat-card:hover::after {
+        transform: skewX(-15deg) translateX(-250%);
+    }
+    
+    .stat-value {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.25rem;
+        line-height: 1;
+        letter-spacing: -0.05rem;
+    }
+    
+    .stat-label {
+        color: var(--text-muted);
+        font-size: 0.875rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+    
+    .stat-icon-bg {
+        position: absolute;
+        right: -10px;
+        bottom: -10px;
+        font-size: 5rem;
+        opacity: 0.05;
+        transform: rotate(-15deg);
+        transition: all 0.3s;
+    }
+    
+    .stat-card:hover .stat-icon-bg {
+        transform: rotate(0deg) scale(1.1);
+        opacity: 0.1;
+    }
+    
+    .session-card {
+        border-left: 4px solid transparent;
+        transition: all 0.2s;
+    }
+    
+    .session-card:hover {
+        background-color: var(--bg-body);
+        padding-left: 1.5rem !important;
+    }
+    
+    .chart-container {
+        position: relative;
+        height: 300px;
+        width: 100%;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Header -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-5 animate__animated animate__fadeInDown">
+        <div class="mb-3 mb-md-0">
+            <h2 class="fw-bold mb-1 text-dark">
+                Tableau de bord
+            </h2>
+            <p class="text-muted mb-0">Ravi de vous revoir, <span class="fw-semibold text-primary-custom">{{ user.username }}</span> ! Voici votre bilan.</p>
+        </div>
+        <div>
+            <a href="{% url 'analysis' %}" class="btn btn-primary-custom shadow-sm d-flex align-items-center gap-2">
+                <i class="fas fa-play-circle"></i> <span>Nouvelle Session</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-6 col-lg-3 animate__animated animate__fadeInUp" style="animation-delay: 0.1s;">
+            <div class="stat-card">
+                <div class="d-flex flex-column h-100 justify-content-center position-relative z-1">
+                    <div class="stat-value text-primary-custom">{{ total_sessions }}</div>
+                    <div class="stat-label">Sessions totales</div>
+                </div>
+                <i class="fas fa-video stat-icon-bg text-primary-custom"></i>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-3 animate__animated animate__fadeInUp" style="animation-delay: 0.2s;">
+            <div class="stat-card">
+                <div class="d-flex flex-column h-100 justify-content-center position-relative z-1">
+                    <div class="stat-value text-success">{{ avg_score }}%</div>
+                    <div class="stat-label">Score moyen</div>
+                </div>
+                <i class="fas fa-chart-pie stat-icon-bg text-success"></i>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-3 animate__animated animate__fadeInUp" style="animation-delay: 0.3s;">
+            <div class="stat-card">
+                <div class="d-flex flex-column h-100 justify-content-center position-relative z-1">
+                    <div class="stat-value text-info">
+                        {% if total_time.total_seconds > 3600 %}
+                            {{ total_time.total_seconds|floatformat:0|divisibleby:3600 }}h
+                        {% else %}
+                            {{ total_time.total_seconds|floatformat:0|divisibleby:60 }}m
+                        {% endif %}
+                    </div>
+                    <div class="stat-label">Temps total</div>
+                </div>
+                <i class="fas fa-clock stat-icon-bg text-info"></i>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-3 animate__animated animate__fadeInUp" style="animation-delay: 0.4s;">
+            <div class="stat-card">
+                <div class="d-flex flex-column h-100 justify-content-center position-relative z-1">
+                    <div class="stat-value text-danger">{{ total_alerts }}</div>
+                    <div class="stat-label">Alertes totales</div>
+                </div>
+                <i class="fas fa-bell stat-icon-bg text-danger"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row g-4 mb-5">
+        <div class="col-lg-6 animate__animated animate__fadeInLeft" style="animation-delay: 0.5s;">
+            <div class="card card-custom h-100 border-0 shadow-sm">
+                <div class="card-header bg-white border-bottom p-4 d-flex justify-content-between align-items-center">
+                    <h5 class="fw-bold mb-0 text-dark">
+                        <i class="fas fa-chart-line me-2 text-primary-custom"></i>Évolution du Score
+                    </h5>
+                    <span class="badge bg-light text-muted border">7 derniers jours</span>
+                </div>
+                <div class="card-body p-4">
+                    <div class="chart-container">
+                        <canvas id="scoreChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-6 animate__animated animate__fadeInRight" style="animation-delay: 0.6s;">
+            <div class="card card-custom h-100 border-0 shadow-sm">
+                <div class="card-header bg-white border-bottom p-4 d-flex justify-content-between align-items-center">
+                    <h5 class="fw-bold mb-0 text-dark">
+                        <i class="fas fa-hourglass-half me-2 text-primary-custom"></i>Temps de session
+                    </h5>
+                    <span class="badge bg-light text-muted border">7 derniers jours</span>
+                </div>
+                <div class="card-body p-4">
+                    <div class="chart-container">
+                        <canvas id="timeChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Sessions -->
+    <div class="row mb-5 animate__animated animate__fadeInUp" style="animation-delay: 0.7s;">
+        <div class="col-12">
+            <div class="card card-custom border-0 shadow-sm">
+                <div class="card-header bg-white border-bottom p-4 d-flex justify-content-between align-items-center">
+                    <h5 class="fw-bold mb-0 text-dark">
+                        <i class="fas fa-history me-2 text-primary-custom"></i>Sessions récentes
+                    </h5>
+                    <a href="{% url 'statistics' %}" class="btn btn-sm btn-outline-custom">
+                        Tout voir <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
+                </div>
+                <div class="card-body p-0">
+                    {% if recent_sessions %}
+                        <div class="list-group list-group-flush">
+                            {% for session in recent_sessions %}
+                                <a href="{% url 'session_detail' session.id %}" 
+                                   class="list-group-item list-group-item-action session-card p-4 border-bottom"
+                                   style="border-left-color: {% if session.posture_score >= 80 %}#10B981{% elif session.posture_score >= 60 %}#F59E0B{% else %}#EF4444{% endif %};">
+                                    <div class="row align-items-center">
+                                        <div class="col-md-6 mb-2 mb-md-0">
+                                            <h6 class="fw-bold mb-1 text-dark">
+                                                Session du {{ session.start_time|date:"d M Y" }}
+                                            </h6>
+                                            <div class="small text-muted d-flex align-items-center gap-3">
+                                                <span><i class="far fa-clock me-1"></i> {{ session.start_time|date:"H:i" }}</span>
+                                                <span><i class="fas fa-stopwatch me-1"></i> {{ session.duration }}</span>
+                                                <span><i class="fas fa-bell me-1"></i> {{ session.alert_count }} alertes</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 text-md-end">
+                                            <div class="d-inline-flex align-items-center gap-3">
+                                                <div class="text-end">
+                                                    <div class="h4 fw-bold mb-0 {% if session.posture_score >= 80 %}text-success{% elif session.posture_score >= 60 %}text-warning{% else %}text-danger{% endif %}">
+                                                        {{ session.posture_score|floatformat:0 }}%
+                                                    </div>
+                                                    <small class="text-muted text-uppercase" style="font-size: 0.7rem; letter-spacing: 0.05em;">Score</small>
+                                                </div>
+                                                <div class="rounded-circle p-2 d-flex align-items-center justify-content-center border" style="width: 40px; height: 40px;">
+                                                    <i class="fas fa-chevron-right text-muted"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <div class="mb-3">
+                                <i class="fas fa-clipboard-list fa-3x text-muted opacity-25"></i>
+                            </div>
+                            <h5 class="text-muted">Aucune session enregistrée</h5>
+                            <p class="text-muted small mb-4">Commencez votre première analyse pour voir vos données ici.</p>
+                            <a href="{% url 'analysis' %}" class="btn btn-primary-custom">
+                                <i class="fas fa-play me-2"></i> Démarrer une analyse
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Colors
+const primaryColor = '#4F46E5';
+const primaryLight = 'rgba(79, 70, 229, 0.1)';
+const secondaryColor = '#10B981';
+
+// Chart.js - Score Evolution
+const scoreCtx = document.getElementById('scoreChart').getContext('2d');
+const scoreChart = new Chart(scoreCtx, {
+    type: 'line',
+    data: {
+        labels: {{ chart_dates|safe }},
+        datasets: [{
+            label: 'Score de posture (%)',
+            data: {{ chart_scores|safe }},
+            borderColor: primaryColor,
+            backgroundColor: primaryLight,
+            borderWidth: 2,
+            pointBackgroundColor: '#ffffff',
+            pointBorderColor: primaryColor,
+            pointBorderWidth: 2,
+            pointRadius: 4,
+            pointHoverRadius: 6,
+            tension: 0.4,
+            fill: true
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: false
+            },
+            tooltip: {
+                backgroundColor: '#111827',
+                titleFont: { family: 'Inter', size: 13 },
+                bodyFont: { family: 'Inter', size: 13 },
+                padding: 10,
+                cornerRadius: 8,
+                displayColors: false
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                max: 100,
+                grid: {
+                    color: '#f3f4f6'
+                },
+                ticks: {
+                    font: { family: 'Inter' }
+                }
+            },
+            x: {
+                grid: {
+                    display: false
+                },
+                ticks: {
+                    font: { family: 'Inter' }
+                }
+            }
+        }
+    }
+});
+
+// Chart.js - Time Chart
+const timeCtx = document.getElementById('timeChart').getContext('2d');
+const timeChart = new Chart(timeCtx, {
+    type: 'bar',
+    data: {
+        labels: {{ chart_dates|safe }},
+        datasets: [{
+            label: 'Temps (minutes)',
+            data: {{ chart_times|safe }},
+            backgroundColor: secondaryColor,
+            borderRadius: 4,
+            barThickness: 20
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: false
+            },
+            tooltip: {
+                backgroundColor: '#111827',
+                titleFont: { family: 'Inter', size: 13 },
+                bodyFont: { family: 'Inter', size: 13 },
+                padding: 10,
+                cornerRadius: 8,
+                displayColors: false
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                grid: {
+                    color: '#f3f4f6'
+                },
+                ticks: {
+                    font: { family: 'Inter' }
+                }
+            },
+            x: {
+                grid: {
+                    display: false
+                },
+                ticks: {
+                    font: { family: 'Inter' }
+                }
+            }
+        }
+    }
+});
+</script>
+{% endblock %}

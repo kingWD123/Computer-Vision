@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+
+{% block title %}Statistiques - PostureMonitor Pro{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row mb-4 animate__animated animate__fadeInDown">
+        <div class="col-12">
+            <h2 class="fw-bold text-dark"><i class="fas fa-chart-bar text-primary me-2"></i> Statistiques Détaillées
+            </h2>
+            <p class="text-muted">Analysez vos performances sur la durée</p>
+        </div>
+    </div>
+
+    <!-- Filtres -->
+    <div class="row mb-4 animate__animated animate__fadeInUp">
+        <div class="col-12">
+            <div class="card card-custom border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <form method="get" class="row align-items-end">
+                        <div class="col-md-4">
+                            <label class="form-label text-muted small fw-bold">PÉRIODE D'ANALYSE</label>
+                            <select name="period" class="form-select bg-light border-0" onchange="this.form.submit()">
+                                <option value="7" {% if period == '7' %}selected{% endif %}>7 derniers jours</option>
+                                <option value="30" {% if period == '30' %}selected{% endif %}>30 derniers jours</option>
+                                <option value="90" {% if period == '90' %}selected{% endif %}>90 derniers jours</option>
+                            </select>
+                        </div>
+                        <div class="col-md-8">
+                            <!-- Space for potential future filters -->
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistiques -->
+    <div class="row g-4 mb-4 animate__animated animate__fadeInUp" style="animation-delay: 0.1s;">
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div class="stat-label">Sessions</div>
+                    <div class="bg-primary bg-opacity-10 text-primary rounded p-2">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                </div>
+                <div class="stat-value text-primary">{{ stats.total_sessions }}</div>
+                <div class="text-muted small">Total sur la période</div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div class="stat-label">Score moyen</div>
+                    <div class="bg-success bg-opacity-10 text-success rounded p-2">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                </div>
+                <div class="stat-value text-success">{{ stats.avg_score|floatformat:1 }}%</div>
+                <div class="text-muted small">Performance globale</div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div class="stat-label">Meilleur score</div>
+                    <div class="bg-info bg-opacity-10 text-info rounded p-2">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                </div>
+                <div class="stat-value text-info">{{ stats.best_score|floatformat:0 }}%</div>
+                <div class="text-muted small">Record personnel</div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div class="stat-label">Alertes</div>
+                    <div class="bg-danger bg-opacity-10 text-danger rounded p-2">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                </div>
+                <div class="stat-value text-danger">{{ stats.total_alerts }}</div>
+                <div class="text-muted small">Corrections nécessaires</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Liste des sessions -->
+    <div class="row animate__animated animate__fadeInUp" style="animation-delay: 0.2s;">
+        <div class="col-12">
+            <div class="card card-custom border-0 shadow-sm">
+                <div class="card-body p-0">
+                    <div class="p-4 border-bottom">
+                        <h5 class="mb-0 fw-bold"><i class="fas fa-history text-primary me-2"></i> Historique des
+                            sessions</h5>
+                    </div>
+
+                    {% if sessions %}
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th class="border-0 px-4 py-3 text-muted small fw-bold">DATE</th>
+                                    <th class="border-0 px-4 py-3 text-muted small fw-bold">DURÉE</th>
+                                    <th class="border-0 px-4 py-3 text-muted small fw-bold">SCORE</th>
+                                    <th class="border-0 px-4 py-3 text-muted small fw-bold">ALERTES</th>
+                                    <th class="border-0 px-4 py-3 text-muted small fw-bold text-end">ACTION</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for session in sessions %}
+                                <tr>
+                                    <td class="px-4 py-3 fw-medium">{{ session.start_time|date:"d/m/Y H:i" }}</td>
+                                    <td class="px-4 py-3 text-muted">{{ session.duration }}</td>
+                                    <td class="px-4 py-3">
+                                        <span
+                                            class="badge rounded-pill {% if session.posture_score >= 80 %}bg-success{% elif session.posture_score >= 60 %}bg-warning{% else %}bg-danger{% endif %} px-3 py-2">
+                                            {{ session.posture_score|floatformat:0 }}%
+                                        </span>
+                                    </td>
+                                    <td class="px-4 py-3">{{ session.alert_count }}</td>
+                                    <td class="px-4 py-3 text-end">
+                                        <a href="{% url 'session_detail' session.id %}"
+                                            class="btn btn-sm btn-outline-primary rounded-pill px-3">
+                                            Voir <i class="fas fa-arrow-right ms-1"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+                            style="width: 80px; height: 80px;">
+                            <i class="fas fa-inbox fa-3x text-muted opacity-50"></i>
+                        </div>
+                        <h5 class="text-muted">Aucune session pour cette période</h5>
+                        <p class="text-muted small">Commencez une nouvelle session pour voir vos statistiques apparaître
+                            ici.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

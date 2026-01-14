@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% block title %}Connexion - PostureMonitor Pro{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-xl-10 col-lg-12">
+            <div class="card border-0 shadow-lg overflow-hidden rounded-4 animate__animated animate__fadeInUp">
+                <div class="row g-0">
+                    <!-- Section Visuelle (Gauche) -->
+                    <div class="col-lg-6 d-none d-lg-block position-relative bg-primary">
+                        <div class="position-absolute top-0 start-0 w-100 h-100 bg-gradient-primary"></div>
+                        <!-- Décoration d'arrière-plan -->
+                        <div class="position-absolute top-0 start-0 w-100 h-100"
+                            style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.05\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');">
+                        </div>
+
+                        <div
+                            class="position-relative h-100 d-flex flex-column justify-content-center align-items-center text-white p-5 text-center">
+                            <div class="mb-4 rounded-circle bg-white bg-opacity-25 p-4 animate__animated animate__pulse animate__infinite"
+                                style="animation-duration: 3s;">
+                                <i class="fas fa-chart-pie fa-3x text-white"></i>
+                            </div>
+                            <h2 class="fw-bold mb-3">Analysez votre posture</h2>
+                            <p class="lead opacity-75 mb-4">Accédez à votre tableau de bord et suivez vos progrès en
+                                temps réel grâce à notre IA avancée.</p>
+                            <div class="d-flex gap-2 opacity-50">
+                                <i class="fas fa-circle fa-xs"></i>
+                                <i class="fas fa-circle fa-xs"></i>
+                                <i class="fas fa-circle fa-xs"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section Formulaire (Droite) -->
+                    <div class="col-lg-6 bg-white">
+                        <div class="p-4 p-lg-5">
+                            <div class="text-center mb-5">
+                                <div class="d-inline-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary rounded-circle mb-3"
+                                    style="width: 60px; height: 60px;">
+                                    <i class="fas fa-user-lock fa-xl"></i>
+                                </div>
+                                <h3 class="fw-bold text-dark">Bon retour !</h3>
+                                <p class="text-muted">Connectez-vous pour continuer</p>
+                            </div>
+
+                            <form method="post" class="needs-validation">
+                                {% csrf_token %}
+
+                                {% if form.errors %}
+                                <div
+                                    class="alert alert-danger border-0 bg-danger bg-opacity-10 text-danger rounded-3 text-sm mb-4 fade show">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-exclamation-circle me-2"></i>
+                                        <div>Identifiant ou mot de passe incorrect.</div>
+                                    </div>
+                                </div>
+                                {% endif %}
+
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control bg-light border-0" id="id_username"
+                                        name="username" placeholder="Nom d'utilisateur" required autofocus>
+                                    <label for="id_username" class="text-muted"><i class="fas fa-user me-2"></i>Nom
+                                        d'utilisateur</label>
+                                </div>
+
+                                <div class="form-floating mb-4">
+                                    <input type="password" class="form-control bg-light border-0" id="id_password"
+                                        name="password" placeholder="Mot de passe" required>
+                                    <label for="id_password" class="text-muted"><i class="fas fa-lock me-2"></i>Mot de
+                                        passe</label>
+                                </div>
+
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="rememberMe">
+                                        <label class="form-check-label text-muted small" for="rememberMe">
+                                            Se souvenir de moi
+                                        </label>
+                                    </div>
+                                    <a href="#" class="text-primary small text-decoration-none fw-medium">Mot de passe
+                                        oublié ?</a>
+                                </div>
+
+                                <button type="submit"
+                                    class="btn btn-primary-custom w-100 py-3 mb-4 fw-bold shadow-sm rounded-pill">
+                                    Se connecter <i class="fas fa-arrow-right ms-2"></i>
+                                </button>
+                            </form>
+
+                            <div class="position-relative mb-4">
+                                <hr class="bg-secondary opacity-10">
+                                <span
+                                    class="position-absolute top-50 start-50 translate-middle bg-white px-3 text-muted small text-uppercase fw-bold"
+                                    style="letter-spacing: 1px;">ou</span>
+                            </div>
+
+                            <div class="text-center">
+                                <p class="mb-0 text-muted">
+                                    Pas encore de compte ?
+                                    <a href="{% url 'register' %}" class="text-primary fw-bold text-decoration-none">
+                                        Créer un compte
+                                    </a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

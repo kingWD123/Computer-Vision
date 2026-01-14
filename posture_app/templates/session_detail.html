@@ -1,0 +1,187 @@
+{% extends 'base.html' %}
+
+{% block title %}Session #{{ session.id }} - PostureMonitor Pro{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row mb-4 animate__animated animate__fadeInDown">
+        <div class="col-12 d-flex justify-content-between align-items-center">
+            <div>
+                <a href="{% url 'statistics' %}" class="btn btn-outline-secondary btn-sm mb-2">
+                    <i class="fas fa-arrow-left"></i> Retour
+                </a>
+                <h2 class="fw-bold mb-0"><i class="fas fa-history text-primary me-2"></i> Détails de la Session <span
+                        class="text-muted fs-4">#{{ session.id }}</span></h2>
+            </div>
+            <div>
+                <span
+                    class="badge {% if session.posture_score >= 80 %}bg-success{% elif session.posture_score >= 60 %}bg-warning{% else %}bg-danger{% endif %} fs-5 px-3 py-2 rounded-pill shadow-sm">
+                    Score: {{ session.posture_score|floatformat:1 }}%
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Informations générales -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-6">
+            <div class="card card-custom h-100 animate__animated animate__fadeInLeft">
+                <div class="card-body">
+                    <h5 class="mb-4 fw-bold text-primary border-bottom pb-2"><i class="fas fa-calendar me-2"></i>
+                        Informations Temporelles</h5>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="text-muted">Début</span>
+                        <span class="fw-bold">{{ session.start_time|date:"d/m/Y à H:i:s" }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="text-muted">Fin</span>
+                        <span class="fw-bold">{{ session.end_time|date:"d/m/Y à H:i:s" }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="text-muted">Durée totale</span>
+                        <span class="badge bg-primary rounded-pill px-3">{{ session.duration }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card card-custom h-100 animate__animated animate__fadeInRight">
+                <div class="card-body">
+                    <h5 class="mb-4 fw-bold text-primary border-bottom pb-2"><i class="fas fa-chart-pie me-2"></i>
+                        Résumé de Performance</h5>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="text-muted">Temps mauvaise posture</span>
+                        <span class="text-danger fw-bold">{{ session.total_bad_posture_time }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="text-muted">Taux mauvaise posture</span>
+                        <div class="progress w-50" style="height: 10px;">
+                            <div class="progress-bar bg-danger" role="progressbar"
+                                style="width: {{ session.bad_posture_percentage|floatformat:0 }}%;"
+                                aria-valuenow="{{ session.bad_posture_percentage|floatformat:0 }}" aria-valuemin="0"
+                                aria-valuemax="100"></div>
+                        </div>
+                        <span class="ms-2 fw-bold">{{ session.bad_posture_percentage|floatformat:1 }}%</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="text-muted">Alertes générées</span>
+                        <span class="badge bg-warning text-dark rounded-pill px-3">{{ session.alert_count }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Angles moyens -->
+    <div class="row mb-4 animate__animated animate__fadeInUp" style="animation-delay: 0.1s;">
+        <div class="col-12">
+            <div class="card card-custom">
+                <div class="card-body">
+                    <h5 class="mb-4 fw-bold text-primary"><i class="fas fa-ruler-combined me-2"></i> Moyennes
+                        Biométriques</h5>
+                    <div class="row text-center g-4">
+                        <div class="col-md-4">
+                            <div class="p-3 rounded-3 bg-light border">
+                                <h3 class="text-primary fw-bold mb-1">{{
+                                    session.average_neck_angle|floatformat:1|default:"--" }}°</h3>
+                                <p class="text-muted mb-0 small text-uppercase fw-bold">Angle du cou</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="p-3 rounded-3 bg-light border">
+                                <h3 class="text-success fw-bold mb-1">{{
+                                    session.average_back_angle|floatformat:1|default:"--" }}°</h3>
+                                <p class="text-muted mb-0 small text-uppercase fw-bold">Angle du dos</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="p-3 rounded-3 bg-light border">
+                                <h3 class="text-info fw-bold mb-1">{{
+                                    session.average_shoulder_diff|floatformat:1|default:"--" }}</h3>
+                                <p class="text-muted mb-0 small text-uppercase fw-bold">Symétrie épaules</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alertes -->
+    <div class="row animate__animated animate__fadeInUp" style="animation-delay: 0.2s;">
+        <div class="col-12">
+            <div class="card card-custom">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="fw-bold text-primary mb-0"><i class="fas fa-bell me-2"></i> Journal des Alertes</h5>
+                        <span class="badge bg-secondary rounded-pill">{{ alerts.count }} événements</span>
+                    </div>
+
+                    {% if alerts %}
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="border-0 rounded-start">Heure</th>
+                                    <th class="border-0">Type</th>
+                                    <th class="border-0">Durée</th>
+                                    <th class="border-0">Angle Cou</th>
+                                    <th class="border-0">Angle Dos</th>
+                                    <th class="border-0 rounded-end">Épaules</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for alert in alerts %}
+                                <tr>
+                                    <td class="fw-bold text-muted">{{ alert.timestamp|date:"H:i:s" }}</td>
+                                    <td>
+                                        <span class="badge bg-danger-subtle text-danger border border-danger">
+                                            {{ alert.get_alert_type_display }}
+                                        </span>
+                                    </td>
+                                    <td>{{ alert.duration }}</td>
+                                    <td>
+                                        <span
+                                            class="{% if alert.neck_angle < 15 or alert.neck_angle > 45 %}text-danger fw-bold{% endif %}">
+                                            {{ alert.neck_angle|floatformat:1 }}°
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span
+                                            class="{% if alert.back_angle < 80 or alert.back_angle > 110 %}text-danger fw-bold{% endif %}">
+                                            {{ alert.back_angle|floatformat:1 }}°
+                                        </span>
+                                    </td>
+                                    <td>{{ alert.shoulder_diff|floatformat:1 }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <div class="mb-3">
+                            <i class="fas fa-check-circle fa-4x text-success opacity-50"></i>
+                        </div>
+                        <h4 class="fw-bold text-muted">Aucune alerte !</h4>
+                        <p class="text-muted mb-0">Excellente posture maintenue tout au long de la session.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-center gap-3 mt-5 mb-5 animate__animated animate__fadeInUp"
+        style="animation-delay: 0.3s;">
+        <a href="{% url 'statistics' %}" class="btn btn-outline-secondary px-4 py-2 rounded-pill">
+            <i class="fas fa-arrow-left me-2"></i> Retour aux statistiques
+        </a>
+        <a href="{% url 'analysis' %}" class="btn btn-primary px-4 py-2 rounded-pill shadow-sm">
+            <i class="fas fa-play me-2"></i> Nouvelle analyse
+        </a>
+    </div>
+</div>
+</div>
+{% endblock %}

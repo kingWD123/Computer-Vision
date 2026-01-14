@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+
+{% block title %}Profil - PostureMonitor Pro{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row g-4 animate__animated animate__fadeIn">
+        <div class="col-md-4">
+            <div class="card card-custom border-0 shadow-sm h-100">
+                <div class="card-body text-center p-4">
+                    <div class="position-relative d-inline-block mb-3">
+                        <img src="{{ profile.profile_picture.url }}" alt="Photo de profil"
+                            class="rounded-circle shadow-sm border border-4 border-light"
+                            style="width: 150px; height: 150px; object-fit: cover;"
+                            onerror="this.src='https://via.placeholder.com/150'">
+                        <div class="position-absolute bottom-0 end-0 bg-success border border-white rounded-circle p-2"
+                            style="width: 24px; height: 24px;"></div>
+                    </div>
+                    <h4 class="fw-bold mb-1">{{ user.username }}</h4>
+                    <p class="text-muted mb-3">{{ profile.occupation|default:"Utilisateur" }}</p>
+
+                    <div class="d-flex justify-content-center gap-2 mb-4">
+                        <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill">
+                            <i class="fas fa-calendar-alt me-1"></i> Membre depuis {{ user.date_joined|date:"M Y" }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="card card-custom border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <h5 class="card-title fw-bold mb-4 d-flex align-items-center">
+                        <div class="bg-primary bg-opacity-10 text-primary rounded p-2 me-2">
+                            <i class="fas fa-user-edit"></i>
+                        </div>
+                        Informations personnelles
+                    </h5>
+
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="username" class="form-label text-muted small fw-bold">NOM
+                                    D'UTILISATEUR</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-0"><i
+                                            class="fas fa-user text-muted"></i></span>
+                                    <input type="text" class="form-control bg-light border-0" id="username"
+                                        value="{{ user.username }}" readonly>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="email" class="form-label text-muted small fw-bold">EMAIL</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-0"><i
+                                            class="fas fa-envelope text-muted"></i></span>
+                                    <input type="email" class="form-control bg-light border-0" id="email"
+                                        value="{{ user.email }}" readonly>
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <label for="occupation" class="form-label text-muted small fw-bold">PROFESSION</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-0"><i
+                                            class="fas fa-briefcase text-muted"></i></span>
+                                    <input type="text" class="form-control bg-light border-0" id="occupation"
+                                        name="occupation" value="{{ profile.occupation }}">
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <label for="profile_picture" class="form-label text-muted small fw-bold">PHOTO DE
+                                    PROFIL</label>
+                                <input type="file" class="form-control" id="profile_picture" name="profile_picture"
+                                    accept="image/*">
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end mt-4">
+                            <button type="submit" class="btn btn-primary-custom shadow-sm">
+                                <i class="fas fa-save me-2"></i> Enregistrer les modifications
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card card-custom border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <h5 class="card-title fw-bold mb-3 d-flex align-items-center">
+                        <div class="bg-warning bg-opacity-10 text-warning rounded p-2 me-2">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        Sécurité
+                    </h5>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="fw-bold mb-1">Mot de passe</h6>
+                            <p class="text-muted small mb-0">Dernière modification il y a 3 mois</p>
+                        </div>
+                        <button class="btn btn-outline-custom btn-sm" disabled>
+                            Modifier
+                        </button>
+                    </div>
+                    <div class="alert alert-light mt-3 mb-0 text-muted small border-0">
+                        <i class="fas fa-info-circle me-1"></i> Pour changer votre mot de passe, veuillez contacter
+                        l'administrateur système.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

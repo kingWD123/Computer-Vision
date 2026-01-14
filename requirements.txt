@@ -1,0 +1,15 @@
+# Django & REST Framework
+Django==4.2.7
+djangorestframework==3.14.0
+
+# Vision & IA
+opencv-python>=4.8.0
+mediapipe>=0.10.14
+numpy>=1.26.0  # Compatible Python 3.12
+
+# Images
+pillow>=10.0.0
+
+# Optionnel : Pour un meilleur support
+setuptools>=65.0.0
+wheel>=0.40.0
