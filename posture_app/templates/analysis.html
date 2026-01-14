@@ -363,6 +363,9 @@
                         style="display:none;">
                         <i class="fas fa-stop me-2"></i> Arrêter l'analyse
                     </button>
+                    <a href="{% url 'posture_guide' %}" class="btn btn-outline-secondary w-100 mt-2">
+                        <i class="fas fa-book-open me-2"></i> Consulter le guide de posture
+                    </a>
                 </div>
 
                 <hr class="opacity-10 my-4">
@@ -413,41 +416,41 @@
 
 
                 <div class="stats-box animate__animated animate__fadeInUp" style="animation-delay: 0.3s;">
-                <h5 class="mb-3 fw-bold">
-                    <i class="fas fa-chart-line text-primary me-2"></i> Statistiques
-                </h5>
+                    <h5 class="mb-3 fw-bold">
+                        <i class="fas fa-chart-line text-primary me-2"></i> Statistiques
+                    </h5>
 
-                <div class="row text-center g-2">
-                    <div class="col-6 mb-2">
-                        <div class="p-2 bg-light rounded-3">
-                            <small class="text-muted d-block mb-1">Durée</small>
-                            <div class="fw-bold" id="sessionDuration">00:00</div>
+                    <div class="row text-center g-2">
+                        <div class="col-6 mb-2">
+                            <div class="p-2 bg-light rounded-3">
+                                <small class="text-muted d-block mb-1">Durée</small>
+                                <div class="fw-bold" id="sessionDuration">00:00</div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-6 mb-2">
-                        <div class="p-2 bg-light rounded-3">
-                            <small class="text-muted d-block mb-1">Score</small>
-                            <div class="fw-bold text-success" id="sessionScore">100%</div>
+                        <div class="col-6 mb-2">
+                            <div class="p-2 bg-light rounded-3">
+                                <small class="text-muted d-block mb-1">Score</small>
+                                <div class="fw-bold text-success" id="sessionScore">100%</div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="p-2 bg-light rounded-3">
-                            <small class="text-muted d-block mb-1">Alertes</small>
-                            <div class="fw-bold text-danger" id="alertCount">0</div>
+                        <div class="col-6">
+                            <div class="p-2 bg-light rounded-3">
+                                <small class="text-muted d-block mb-1">Alertes</small>
+                                <div class="fw-bold text-danger" id="alertCount">0</div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="p-2 bg-light rounded-3">
-                            <small class="text-muted d-block mb-1">Mauvaise</small>
-                            <div class="fw-bold" id="badPostureTime">0s</div>
+                        <div class="col-6">
+                            <div class="p-2 bg-light rounded-3">
+                                <small class="text-muted d-block mb-1">Mauvaise</small>
+                                <div class="fw-bold" id="badPostureTime">0s</div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            </div>
 
             <!-- Statistiques de session -->
-            
+
         </div>
     </div>
 </div>
