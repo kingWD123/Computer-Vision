@@ -478,7 +478,6 @@
         try {
             initSkeletonCanvas();
 
-            // Démarrer la webcam
             videoStream = await navigator.mediaDevices.getUserMedia({
                 video: { width: 640, height: 480 }
             });
@@ -486,14 +485,11 @@
             const video = document.getElementById('videoFeed');
             video.srcObject = videoStream;
 
-            // Attendre que la vidéo soit chargée
             video.onloadedmetadata = () => {
-                // Ajuster le canvas à la taille de la vidéo
                 skeletonCanvas.width = video.videoWidth;
                 skeletonCanvas.height = video.videoHeight;
             };
 
-            // Créer une session
             const response = await fetch('/api/session/start/', {
                 method: 'POST',
                 headers: {
@@ -501,29 +497,33 @@
                 }
             });
 
+            if (!response.ok) {
+                throw new Error('Erreur de démarrage de session: ' + response.status);
+            }
+
             const data = await response.json();
+            if (!data.success || !data.session_id) {
+                throw new Error('Réponse invalide de l’API de session');
+            }
+
             sessionId = data.session_id;
             sessionStartTime = Date.now();
             isAnalyzing = true;
 
-            // Changer les boutons
             document.getElementById('startBtn').style.display = 'none';
             document.getElementById('stopBtn').style.display = 'inline-block';
 
-            // Mettre à jour le statut
             document.getElementById('detectionStatus').innerHTML =
                 '<i class="fas fa-circle"></i> Analyse en cours...';
             document.getElementById('detectionStatus').classList.add('active');
 
-            // Démarrer le traitement des frames
-            analysisInterval = setInterval(processFrame, 200); // 5 FPS
+            analysisInterval = setInterval(processFrame, 200);
 
-            // Démarrer le timer
             setInterval(updateTimer, 1000);
 
         } catch (error) {
-            console.error('Erreur:', error);
-            alert('Impossible d\'accéder à la webcam. Vérifiez les permissions.');
+            console.error('Erreur lors du démarrage de l’analyse:', error);
+            alert('Impossible d\'accéder à la webcam ou de démarrer la session. Vérifiez les permissions et la console.');
         }
     }
 
@@ -603,34 +603,45 @@
                 })
             });
 
+            if (!response.ok) {
+                console.error('Réponse HTTP invalide pour l’analyse:', response.status);
+                document.getElementById('statusText').textContent = 'Erreur d’analyse (HTTP ' + response.status + ')';
+                document.getElementById('detectionStatus').classList.remove('active');
+                return;
+            }
+
             const data = await response.json();
 
-            if (data.success && data.result.detected) {
+            if (!data.success) {
+                console.error('Erreur de traitement API:', data.error || data.message || 'Erreur inconnue');
+                document.getElementById('statusText').textContent = 'Erreur d’analyse, voir la console.';
+                document.getElementById('detectionStatus').classList.remove('active');
+                return;
+            }
+
+            if (data.result && data.result.detected) {
                 updateUI(data.result);
 
-                // IMPORTANT: Dessiner le squelette reçu du serveur
                 if (data.result.image) {
                     drawSkeletonImage(data.result.image);
                 }
 
-                // Mettre à jour le statut
                 document.getElementById('detectionStatus').innerHTML =
                     '<i class="fas fa-circle"></i> Posture détectée';
             } else {
-                // Personne non détectée
                 document.getElementById('statusText').textContent = 'Personne non détectée';
                 document.getElementById('detectionStatus').innerHTML =
                     '<i class="fas fa-circle"></i> Positionnez-vous face à la caméra';
 
-                // Afficher la vidéo normale sans squelette
                 if (skeletonCtx) {
                     skeletonCtx.clearRect(0, 0, skeletonCanvas.width, skeletonCanvas.height);
-                    // Dessiner la frame actuelle
                     skeletonCtx.drawImage(video, 0, 0, skeletonCanvas.width, skeletonCanvas.height);
                 }
             }
         } catch (error) {
             console.error('Erreur de traitement:', error);
+            document.getElementById('statusText').textContent = 'Erreur d’analyse, voir la console.';
+            document.getElementById('detectionStatus').classList.remove('active');
         }
     }
 
