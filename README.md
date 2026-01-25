@@ -1,4 +1,4 @@
-# 🧠 PostureMonitor Pro - Analyse de Posture en Temps Réel
+#  PostureMonitor Pro - Analyse de Posture en Temps Réel
 
 Application web Django utilisant l'IA pour analyser et améliorer votre posture au travail.
 
@@ -6,16 +6,16 @@ Application web Django utilisant l'IA pour analyser et améliorer votre posture 
 ![Python](https://img.shields.io/badge/Python-3.8+-blue)
 ![MediaPipe](https://img.shields.io/badge/MediaPipe-0.10.14-orange)
 
-## 📋 Fonctionnalités
+##  Fonctionnalités
 
-✅ **Analyse en temps réel** - Détection de posture via webcam avec MediaPipe AI  
-✅ **Dashboard interactif** - Statistiques et graphiques personnalisés  
-✅ **Alertes intelligentes** - Notifications visuelles et sonores  
-✅ **Historique complet** - Sauvegarde de toutes vos sessions  
-✅ **Multi-utilisateurs** - Gestion de comptes individuels  
-✅ **API REST** - Endpoints pour extensions futures  
+ **Analyse en temps réel** - Détection de posture via webcam avec MediaPipe AI  
+ **Dashboard interactif** - Statistiques et graphiques personnalisés  
+ **Alertes intelligentes** - Notifications visuelles et sonores  
+ **Historique complet** - Sauvegarde de toutes vos sessions  
+ **Multi-utilisateurs** - Gestion de comptes individuels  
+ **API REST** - Endpoints pour extensions futures  
 
-## 🚀 Installation Rapide
+##  Installation Rapide
 
 ### Prérequis
 
@@ -69,11 +69,11 @@ Suivez les instructions pour créer votre compte admin.
 python manage.py runserver
 ```
 
-### 🎉 C'est prêt !
+###  C'est prêt !
 
 Ouvrez votre navigateur : **http://127.0.0.1:8000**
 
-## 📁 Structure du Projet
+##  Structure du Projet
 
 ```
 posture_monitor_django/
@@ -114,7 +114,7 @@ posture_monitor_django/
 └── README.md                   # Ce fichier
 ```
 
-## 🎯 Utilisation
+##  Utilisation
 
 ### 1. Créer un compte
 
@@ -135,7 +135,7 @@ posture_monitor_django/
 - Statistiques : Analyses détaillées
 - Profil : Gérer votre compte
 
-## 🔧 Configuration
+##  Configuration
 
 ### Modifier les seuils de détection
 
@@ -158,7 +158,7 @@ LANGUAGE_CODE = 'fr-fr'  # Français
 TIME_ZONE = 'Africa/Dakar'
 ```
 
-## 🛠️ Commandes Utiles
+##  Commandes Utiles
 
 ```bash
 # Créer des migrations
@@ -180,7 +180,7 @@ python manage.py test
 python manage.py shell
 ```
 
-## 🌐 Accès Admin
+##  Accès Admin
 
 URL : http://127.0.0.1:8000/admin/
 
@@ -190,7 +190,7 @@ Connectez-vous avec votre compte superuser pour :
 - Consulter les alertes
 - Modifier les données
 
-## 📊 Modèles de Données
+##  Modèles de Données
 
 ### UserProfile
 - Extension du modèle User
@@ -237,7 +237,7 @@ response = requests.post('http://127.0.0.1:8000/api/session/start/')
 session_id = response.json()['session_id']
 ```
 
-## 🚀 Déploiement
+##  Déploiement
 
 ### Option 1 : Heroku
 
@@ -258,7 +258,7 @@ heroku run python manage.py migrate
 
 Voir la documentation officielle Django pour le déploiement en production.
 
-### ⚠️ Production Checklist
+###  Production Checklist
 
 - [ ] DEBUG = False
 - [ ] SECRET_KEY dans variable d'environnement
@@ -267,7 +267,7 @@ Voir la documentation officielle Django pour le déploiement en production.
 - [ ] Configurer HTTPS
 - [ ] Activer WhiteNoise pour les fichiers statiques
 
-## 🤝 Contribution
+##  Contribution
 
 Les contributions sont les bienvenues ! Pour contribuer :
 
@@ -277,11 +277,11 @@ Les contributions sont les bienvenues ! Pour contribuer :
 4. Pushez vers la branche (`git push origin feature/AmazingFeature`)
 5. Ouvrez une Pull Request
 
-## 📝 Licence
+##  Licence
 
 Ce projet est sous licence MIT.
 
-## 🆘 Support
+##  Support
 
 En cas de problème :
 
@@ -289,16 +289,6 @@ En cas de problème :
 2. Ouvrez une issue sur GitHub
 3. Contactez-nous
 
-## 🎓 Crédits
-
-- **MediaPipe** - Google Research
-- **Django** - Django Software Foundation
-- **Bootstrap** - Twitter
-- **Chart.js** - Chart.js Team
-
-## 📧 Contact
-
-Pour toute question : votre-email@example.com
 
 ---
 
